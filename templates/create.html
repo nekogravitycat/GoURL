@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-scale="large">
+<head>
+	<meta charset="utf-8">
+	<!-- 核心：Tocas UI -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.2.5/tocas.min.js"></script>
+	<!-- 字體：Noto Sans TC -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+	<!-- other configurations -->
+	<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
+	<title>Create URL</title>
+</head>
+<body>
+<div class="ts-center">
+	<div class="ts-container is-narrow">
+		<div class="ts-space is-large"></div>
+		<!-- create tab -->
+		<div id="create-tab">
+			<div class="ts-segment is-padded is-secondary">
+				<form action="/admin" method="post">
+					<!-- title -->
+					<div class="ts-header is-heavy is-big is-center-aligned">Create a new connection</div>
+					<div class="ts-space"></div>
+					<!-- destination -->
+					<div class="ts-header is-heavy">Where will you take your audience?</div>
+					<div class="ts-space is-small"></div>
+					<label>
+						<span class="ts-text is-label">Destination</span>
+						<div class="ts-space is-small"></div>
+						<div class="ts-input is-solid">
+							<input type="text" name="orig" id="orig" placeholder="https://my-long-url.com" required>
+						</div>
+					</label>
+					<!-- divider -->
+					<div class="ts-space is-large"></div>
+					<div class="ts-divider"></div>
+					<div class="ts-space is-large"></div>
+					<!-- custom url -->
+					<div class="ts-header is-heavy">How do you want to share?</div>
+					<div class="ts-space is-small"></div>
+					<div class="ts-grid is-stackable">
+						<!-- domain -->
+						<div class="column is-4-wide">
+							<label>
+								<span class="ts-text is-label">Domain</span>
+								<div class="ts-space is-small"></div>
+								<div class="ts-input is-solid">
+									<input type="text" placeholder="t.gravitycat.tw" disabled>
+								</div>
+							</label>
+						</div>
+						<!-- custom back-half -->
+						<div class="column is-12-wide">
+							<label>
+								<span class="ts-text is-label">Custom back-half (optional)</span>
+								<div class="ts-space is-small"></div>
+								<div class="ts-input is-solid">
+									<input type="text" name="short" id="short">
+								</div>
+							</label>
+						</div>
+					</div>
+					<!-- divider -->
+					<div class="ts-space is-large"></div>
+					<div class="ts-divider"></div>
+					<div class="ts-space is-large"></div>
+					<!-- submit -->
+					<div class="ts-row is-end-aligned">
+						<div class="column" id="cancel_btn" style="display: none;">
+							<button type="button" class="ts-button is-secondary" onclick="cancel()">Cancel</button>
+						</div>
+						<div class="column">
+							<button type="submit" class="ts-button" id="submit_btn">Create</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ts-space"></div>
+		<!-- message -->
+		<div class="ts-row is-center-aligned">
+			<div class="column">
+				<div class="ts-snackbar" id="msg" style="display: none;">
+					<div class="content">Operation {{status}}: {{detail}}</div>
+					<button class="action" id="msg_btn" onclick="click_msg()">close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+<script>
+	function override() {
+		if ("{{orig}}" === "" || "{{short}}" === "") {
+			alert("prefill not completed. overriding failed");
+			return;
+		}
+		let form = document.createElement("form");
+		form.style.display = "none";
+		form.action = "/admin";
+		form.method = "POST";
+		let orig = document.createElement("input");
+		orig.value = "{{orig}}";
+		orig.name = "orig";
+		form.appendChild(orig);
+		let short = document.createElement("input");
+		short.value = "{{short}}";
+		short.name = "short";
+		form.appendChild(short);
+		let override = document.createElement("input");
+		override.value = "1";
+		override.name = "override";
+		form.appendChild(override);
+		document.body.appendChild(form);
+		form.submit();
+	}
+
+	function cancel() {
+		window.location.replace("/admin");
+	}
+
+	function init_msg() {
+		if ("{{status}}" !== "" || "{{detail}}" !== "") {
+			let msg = document.getElementById("msg");
+			let msg_btn = document.getElementById("msg_btn");
+			msg.style.display = null;
+			switch ("{{status}}") {
+				case "successful":
+					msg.style.backgroundColor = "var(--ts-static-positive-600)";
+					msg_btn.textContent = "copy";
+					return;
+				case "failed":
+					msg.style.backgroundColor = "var(--ts-static-negative-600)";
+					return;
+				case "interrupted":
+					msg.style.backgroundColor = "var(--ts-static-warning-600)";
+					return;
+				default:
+					msg.style.backgroundColor = "var(--ts-static-gray-900)";
+					return;
+			}
+		}
+	}
+
+	function click_msg() {
+		let msg_btn = document.getElementById("msg_btn");
+		if (msg_btn.textContent === "copy" || msg_btn.textContent === "copied!") {
+			navigator.clipboard.writeText("https://{{detail}}");
+			msg_btn.textContent = "copied!";
+		} else {
+			let msg = document.getElementById("msg");
+			msg.style.display = "none";
+		}
+	}
+
+	function init_prefill() {
+		if ("{{orig}}" !== "") {
+			let orig = document.getElementById("orig");
+			orig.value = "{{orig}}"
+		}
+		if ("{{short}}" !== "") {
+			let short = document.getElementById("short");
+			short.value = "{{short}}"
+		}
+	}
+
+	function init_override() {
+		if ("{{override}}" !== "") {
+			let orig = document.getElementById("orig");
+			orig.disabled = true;
+			let short = document.getElementById("short");
+			short.disabled = true;
+			let submit_btn = document.getElementById("submit_btn");
+			submit_btn.type = "button";
+			submit_btn.innerHTML = "override";
+			submit_btn.classList.add("is-negative");
+			submit_btn.onclick = override;
+			let cancel_btn = document.getElementById("cancel_btn");
+			cancel_btn.style.display = null;
+		}
+	}
+
+	function startup() {
+		init_msg();
+		init_prefill();
+		init_override();
+	}
+
+	window.onload = startup;
+</script>
+</html>

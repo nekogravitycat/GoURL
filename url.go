@@ -10,11 +10,11 @@ var urlTable = make(map[string]string)
 
 const URLTABLEFLIE string = "data/url.csv"
 
-func loadURLTable() bool {
+func loadURLTable() {
 	file, err := os.Open(URLTABLEFLIE)
 	if err != nil {
 		fmt.Print("error while opening url.csv: " + err.Error())
-		return false
+		return
 	}
 	defer file.Close()
 
@@ -24,7 +24,7 @@ func loadURLTable() bool {
 	data, err := reader.ReadAll()
 	if err != nil {
 		fmt.Print("error while reading url.csv: " + err.Error())
-		return false
+		return
 	}
 
 	for _, row := range data {
@@ -32,5 +32,35 @@ func loadURLTable() bool {
 	}
 
 	fmt.Print(urlTable)
-	return true
+}
+
+func writeURLTable() {
+	file, err := os.Create(URLTABLEFLIE)
+	if err != nil {
+		fmt.Print("error while creating url.csv: " + err.Error())
+		return
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	for url, destination := range urlTable {
+		if err := writer.Write([]string{url, destination}); err != nil {
+			fmt.Print("error while writing record ({" + url + ", " + destination + "}) to url.csv: " + err.Error())
+		}
+	}
+}
+
+func updateURLTable(url string, destination string, override bool) (bool, string) {
+	record, exists := urlTable[url]
+
+	if !exists || (exists && override) {
+		urlTable[url] = destination
+		return true, "Added: (" + url + " -> " + destination + ")"
+	} else if exists && !override {
+		return false, "Already exists (" + url + " -> " + record + "), please use override"
+	}
+
+	writeURLTable()
 }
