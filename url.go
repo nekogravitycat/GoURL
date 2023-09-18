@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var urlTable = make(map[string]string)
@@ -54,6 +55,10 @@ func writeURLTable() {
 
 func updateURLTable(url string, destination string, override bool) (bool, string) {
 	record, exists := urlTable[url]
+
+	if !strings.HasPrefix(destination, "https://") || !strings.HasPrefix(destination, "http://") {
+		destination = "https://" + destination
+	}
 
 	if !exists || (exists && override) {
 		urlTable[url] = destination
