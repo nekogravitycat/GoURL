@@ -7,9 +7,9 @@ import (
 )
 
 func urlRedirect(c *gin.Context) {
-	url := c.Param("url")
+	shortened := c.Param("url")
 
-	destination, ok := urlTable[url]
+	destination, ok := urlTable[shortened]
 
 	if ok {
 		c.Redirect(http.StatusTemporaryRedirect, destination)
