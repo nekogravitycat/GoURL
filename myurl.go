@@ -60,25 +60,25 @@ func writeURLTable() {
 	}
 }
 
-func updateURLTable(shortened string, destination_raw string, override bool) (ok bool, message string) {
+func createURL(shortened string, destination_raw string, override bool) (status string, message string) {
 	if shortened == "admin" {
-		return false, "Cannot use `admin` as entry"
+		return "failed", "Cannot use `admin` as entry"
 	}
 
 	destination, ok := urlValidator(destination_raw)
 	if !ok {
-		return false, destination
+		return "failed", destination
 	}
 
 	record, exists := urlTable[shortened]
 	if !exists || (exists && override) {
 		urlTable[shortened] = destination
 		writeURLTable()
-		return true, "Added: (" + shortened + " -> " + destination + ")"
+		return "successful", "Added: (" + shortened + " -> " + destination + ")"
 	} else if exists && !override {
-		return false, "Already exists (" + shortened + " -> " + record + "), please use override"
+		return "override-confirm", "Already exists (" + shortened + " -> " + record + "), please use override"
 	} else {
-		return false, "Unknown error"
+		return "failed", "Unknown error"
 	}
 }
 
@@ -95,7 +95,7 @@ func urlValidator(input string) (parsed string, ok bool) {
 	hostPattern := `^([a-zA-Z0-9-]+\.){1,}[a-zA-Z]{2,}$`
 	validHost := regexp.MustCompile(hostPattern).MatchString(parsedURL.Hostname())
 	if !validHost {
-		return "INVALID HOST", false
+		return "INVALID HOST: " + parsedURL.Hostname(), false
 	}
 
 	if parsedURL.Hostname() == "t.gravitycat.tw" {
