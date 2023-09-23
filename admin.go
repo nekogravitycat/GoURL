@@ -9,14 +9,14 @@ import (
 )
 
 // for get method
-func createEntryPage(c *gin.Context) {
+func createEntryView(c *gin.Context) {
 	c.HTML(http.StatusOK, "create.html", gin.H{
 		"title": "Create an entry",
 	})
 }
 
 // for post method
-func createEntry(c *gin.Context) {
+func createEntrySubmit(c *gin.Context) {
 	shortened := strings.TrimSpace(c.PostForm("shortened"))
 	destination := strings.TrimSpace(c.PostForm("destination"))
 	override := strings.TrimSpace(c.PostForm("override"))

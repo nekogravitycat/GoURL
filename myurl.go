@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -14,10 +15,18 @@ var urlTable = make(map[string]string)
 const URLTABLEFLIE string = "data/url.csv"
 
 func loadURLTable() {
+	// create empty url.csv file if not exists
+	if _, err := os.Stat(URLTABLEFLIE); errors.Is(err, os.ErrNotExist) {
+		file, err2 := os.Create(URLTABLEFLIE)
+		if err2 != nil {
+			panic("[ERROR] failed to create url.csv, error: " + err2.Error())
+		}
+		defer file.Close()
+	}
+
 	file, err := os.Open(URLTABLEFLIE)
 	if err != nil {
-		fmt.Print("error while opening url.csv: " + err.Error())
-		return
+		panic("[ERROR] failed to open url.csv, error: " + err.Error())
 	}
 	defer file.Close()
 
@@ -26,8 +35,7 @@ func loadURLTable() {
 
 	data, err := reader.ReadAll()
 	if err != nil {
-		fmt.Print("error while reading url.csv: " + err.Error())
-		return
+		panic("[ERROR] failed to read the content of url.csv, error: " + err.Error())
 	}
 
 	for _, row := range data {
@@ -37,15 +45,12 @@ func loadURLTable() {
 		}
 		urlTable[row[0]] = row[1]
 	}
-
-	fmt.Print(urlTable)
 }
 
 func writeURLTable() {
 	file, err := os.Create(URLTABLEFLIE)
 	if err != nil {
-		fmt.Print("error while creating url.csv: " + err.Error())
-		return
+		panic("[ERROR] failed to create url.csv, error: " + err.Error())
 	}
 	defer file.Close()
 

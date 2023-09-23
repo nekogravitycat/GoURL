@@ -17,10 +17,14 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusPermanentRedirect, "/admin")
 	})
+
 	router.GET("/:url", urlRedirect)
 
-	router.GET("/admin", createEntryPage)
-	router.POST("/admin", createEntry)
+	router.GET("/admin", createEntryView)
+	router.POST("/admin", createEntrySubmit)
 
-	router.Run(":8080")
+	err := router.Run(":8080")
+	if err != nil {
+		panic("[ERROR] failed to start Gin server, error: " + err.Error())
+	}
 }
