@@ -7,7 +7,7 @@ import (
 )
 
 func urlRedirect(c *gin.Context) {
-	shortened := c.Param("url")
+	shortened := c.Param("shortened")
 
 	destination, ok := urlTable[shortened]
 

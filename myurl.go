@@ -14,15 +14,28 @@ var urlTable = make(map[string]string)
 
 const URLTABLEFLIE string = "data/url.csv"
 
-func loadURLTable() {
-	// create empty url.csv file if not exists
+func checkTableFile() {
+	// check if url table file exists
 	if _, err := os.Stat(URLTABLEFLIE); errors.Is(err, os.ErrNotExist) {
+		// check if url data folder exists
+		if _, err2 := os.Stat("data"); errors.Is(err2, os.ErrNotExist) {
+			// create data folder
+			err3 := os.Mkdir("data", os.ModePerm)
+			if err3 != nil {
+				panic("[ERROR] cannot create ./data folder")
+			}
+		}
+		// create url table file
 		file, err2 := os.Create(URLTABLEFLIE)
 		if err2 != nil {
 			panic("[ERROR] failed to create url.csv, error: " + err2.Error())
 		}
 		defer file.Close()
 	}
+}
+
+func loadURLTable() {
+	checkTableFile()
 
 	file, err := os.Open(URLTABLEFLIE)
 	if err != nil {
@@ -57,10 +70,10 @@ func writeURLTable() {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	for url, destination := range urlTable {
-		record := []string{url, destination}
-		if err := writer.Write(record); err != nil {
-			fmt.Print("error while writing record ({" + url + ", " + destination + "}) to url.csv: " + err.Error())
+	for shortened, destination := range urlTable {
+		row := []string{shortened, destination}
+		if err := writer.Write(row); err != nil {
+			fmt.Print("error while writing record ({" + shortened + ", " + destination + "}) to url.csv: " + err.Error())
 		}
 	}
 }

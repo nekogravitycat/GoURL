@@ -18,7 +18,7 @@ func main() {
 		c.Redirect(http.StatusPermanentRedirect, "/admin")
 	})
 
-	router.GET("/:url", urlRedirect)
+	router.GET("/:shortened", urlRedirect)
 
 	router.GET("/admin", createEntryView)
 	router.POST("/admin", createEntrySubmit)

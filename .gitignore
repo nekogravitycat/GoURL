@@ -20,5 +20,8 @@
 # Go workspace file
 go.work
 
-# data folder
+# Data folder
 data/
+
+# Desktop Services Store of MacOS
+.DS_Store
