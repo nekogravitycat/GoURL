@@ -61,6 +61,8 @@ func loadURLTable() {
 }
 
 func writeURLTable() {
+	checkTableFile()
+
 	file, err := os.Create(URLTABLEFLIE)
 	if err != nil {
 		panic("[ERROR] failed to create url.csv, error: " + err.Error())
