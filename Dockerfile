@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN mkdir data && go mod download && go mod verify
+RUN mkdir data
+
+RUN go mod download && go mod verify
 
 RUN go build -o gourl
 
