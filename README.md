@@ -14,7 +14,7 @@ You have the option to run this program within a Docker container for easy setup
 
 To run this program, you need to have Go installed on your system. You can download and install Go from the official website: https://golang.org/dl/
 
-Once you have Go installed, you can follow these steps to get the URL shortener up and running:
+Once you have Go installed, you can follow these steps to get GoURL up and running:
 
 1. Clone the repository:
 
