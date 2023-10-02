@@ -31,7 +31,7 @@ func createEntrySubmit(c *gin.Context) {
 	switch status {
 	case "successful":
 		short_url := "t.gravitycat.tw/" + shortened
-		c.HTML(http.StatusAccepted, "create.html", gin.H{
+		c.HTML(http.StatusOK, "create.html", gin.H{
 			"status": "successful",
 			"detail": short_url,
 		})
