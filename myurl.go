@@ -102,6 +102,8 @@ func createURL(shortened string, destination_raw string, override bool) (status 
 	}
 }
 
+const HOSTPATTERN string = `^([a-zA-Z0-9-]+\.){1,}[a-zA-Z]{2,}$`
+
 func urlValidator(input string) (parsed string, ok bool) {
 	if !strings.HasPrefix(input, "http://") && !strings.HasPrefix(input, "https://") {
 		input = "https://" + input
@@ -116,8 +118,7 @@ func urlValidator(input string) (parsed string, ok bool) {
 		return "CANNOT USE THE HOST: t.gravitycat.tw", false
 	}
 
-	hostPattern := `^([a-zA-Z0-9-]+\.){1,}[a-zA-Z]{2,}$`
-	validHost := regexp.MustCompile(hostPattern).MatchString(parsedURL.Hostname())
+	validHost := regexp.MustCompile(HOSTPATTERN).MatchString(parsedURL.Hostname())
 	if !validHost {
 		return "INVALID HOST: " + parsedURL.Hostname(), false
 	}
