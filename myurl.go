@@ -112,14 +112,14 @@ func urlValidator(input string) (parsed string, ok bool) {
 		return "INVALID URL", false
 	}
 
+	if parsedURL.Hostname() == "t.gravitycat.tw" {
+		return "CANNOT USE THE HOST: t.gravitycat.tw", false
+	}
+
 	hostPattern := `^([a-zA-Z0-9-]+\.){1,}[a-zA-Z]{2,}$`
 	validHost := regexp.MustCompile(hostPattern).MatchString(parsedURL.Hostname())
 	if !validHost {
 		return "INVALID HOST: " + parsedURL.Hostname(), false
-	}
-
-	if parsedURL.Hostname() == "t.gravitycat.tw" {
-		return "CANNOT USE THE HOST: t.gravitycat.tw", false
 	}
 
 	return parsedURL.String(), true
