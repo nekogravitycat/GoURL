@@ -1,5 +1,9 @@
 # GoURL
 
+## DEPRECATION
+
+This project is deprecated, please use newer [@nekogravitycat/linkhub](https://github.com/nekogravitycat/linkhub) for URL shortener service.
+
 ## Introduction
 
 This is a simple URL shortener program written in Go using the Gin web framework. This program allows you to create shortened URLs for long website addresses and then redirect users to the original URLs when they visit the shortened ones.
